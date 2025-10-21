@@ -11,13 +11,13 @@ from fastapi_zero.schemas import (
     UserSchema,
 )
 
-app = FastAPI(title="FastAPI Zero", version="0.1.0")
+app = FastAPI(title='FastAPI Zero', version='0.1.0')
 
 database = []  # Simulação de banco de dados
 
 
 @app.get(
-    "/",
+    '/',
     # response_class=HTMLResponse,
     response_model=Message,
     status_code=HTTPStatus.OK,
@@ -27,7 +27,7 @@ def read_root_hello():
 
 
 @app.get(
-    "/hello-world/",
+    '/hello-world/',
     response_class=HTMLResponse,
 )
 def read_hello_world_html():
@@ -43,11 +43,11 @@ def read_hello_world_html():
 
 
 @app.post(
-    "/users/",
+    '/users/',
     status_code=HTTPStatus.CREATED,
     response_model=UserPublic,
-    summary="Cria um novo usuário",
-    description="Cria um novo usuário com o nome, email e senha",
+    summary='Cria um novo usuário',
+    description='Cria um novo usuário com o nome, email e senha',
 )
 def create_user(user: UserSchema):
     # breakpoint()
@@ -58,17 +58,17 @@ def create_user(user: UserSchema):
     return user_with_id
 
 
-@app.get("/users/", response_model=UserList)
+@app.get('/users/', response_model=UserList)
 def read_users():
-    return {"users": database}
+    return {'users': database}
 
 
-@app.put("/users/{user_id}", response_model=UserPublic)
+@app.put('/users/{user_id}', response_model=UserPublic)
 def update_user(user_id: int, user: UserSchema):
     if user_id > len(database) or user_id < 1:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail=f"User {user_id} not found",
+            detail=f'User {user_id} not found',
         )
 
     user_with_id = UserDB(**user.model_dump(), id=user_id)
@@ -77,25 +77,26 @@ def update_user(user_id: int, user: UserSchema):
     return user_with_id
 
 
-@app.delete("/users/{user_id}", response_model=Message)
+@app.delete('/users/{user_id}', response_model=Message)
 def delete_user(user_id: int):
     if user_id > len(database) or user_id < 1:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail=f"User {user_id} not found",
+            detail=f'User {user_id} not found',
         )
 
     del database[user_id - 1]
 
-    return {"message": "User deleted"}
+    return {'message': 'User deleted'}
 
 
-@app.get("/users/{user_id}", response_model=UserPublic)
+@app.get('/users/{user_id}', response_model=UserPublic)
 def read_user__exercicio(user_id: int):
     if user_id > len(database) or user_id < 1:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail=f"User {user_id} not found",
+            detail=f'User {user_id} not found',
         )
+    # breakpoint()
 
     return database[user_id - 1]
